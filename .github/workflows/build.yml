@@ -67,7 +67,7 @@ jobs:
             is_latest_version: true
             is_stable_version: true
             kernel_flavor: fsync-ba # must match a kernel_flavor from akmods repo
-            kernel_version: 6.9.12-203.fsync.fc40.x86_64 # must match a cached version of the above flavor
+            kernel_version: 6.9.12-205.fsync.fc40.x86_64 # must match a cached version of the above flavor
     steps:
       - name: Define env.IMAGE_FLAVOR
         run: |
@@ -130,6 +130,16 @@ jobs:
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
         uses: actions/checkout@v4
+
+      # Prepare offline documentation
+      - run: mkdir -p ${{ github.workspace }}/system_files/desktop/shared/usr/share/ublue-os/docs/html
+      - name: Build offline documentation
+        uses: ./.github/workflows/build_mkdocs
+        continue-on-error: true
+        with:
+          github_token: ${{ github.token }}
+          output_dir: ${{ github.workspace }}/system_files/desktop/shared/usr/share/ublue-os/docs/html
+          upload_github_page: "false"
 
       - name: Check just syntax
         uses: ublue-os/just-action@v1
